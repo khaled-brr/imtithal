@@ -5,6 +5,8 @@ import axios from 'axios';
 import { toast } from 'vue3-toastify';
 import { loginApiBaseUrl } from '@/config';
 import { hasPermission } from '@/helpers/permissions';
+// API unavailable — use mock client instead of real axios.
+import mockHttp from '@/mocks/client';
 
 const isSubmitting = ref(false);
 
@@ -81,9 +83,10 @@ const mapLinks = ref([
 const logoutUser = async () => {
   try {
     isSubmitting.value = true;
-    axios.defaults.headers.common['Authorization'] = `Bearer ${authService.getToken()}`;
-    // log Authorization header in console
-    await axios.post(`${loginApiBaseUrl}/logout`);
+    // API not working — use mock client.
+    void axios;
+    void loginApiBaseUrl;
+    await mockHttp.post(`/logout`);
 
     authService.logout();
     location.href = '/auth/login';

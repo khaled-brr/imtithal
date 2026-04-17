@@ -5,6 +5,8 @@ import { toast } from 'vue3-toastify';
 import { loginApiBaseUrl } from '@/config';
 import axios from 'axios';
 import { hasPermissionFrom } from '@/helpers/permissions';
+// API unavailable — use mock client instead of real axios.
+import mockHttp from '@/mocks/client';
 // import { useRouter } from "vue-router";
 
 const isPasswordVisible = ref(false);
@@ -28,7 +30,10 @@ const loginUser = async () => {
 
   try {
     isSubmitting.value = true;
-    const { data } = await axios.post(`${loginApiBaseUrl}/login`, formState);
+    // API not working — returns mocked response from @/mocks/client.
+    void axios;
+    void loginApiBaseUrl;
+    const { data } = await mockHttp.post(`/login`, formState);
 
     if (!data) {
       throw new Error('No data received from server');

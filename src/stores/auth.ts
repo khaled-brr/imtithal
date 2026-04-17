@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+// API unavailable — use mock client instead of real axios.
+import mockHttp from '@/mocks/client';
 
 interface User {
   id: number;
@@ -25,7 +27,9 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async login(email: string, password: string) {
-      const response = await axios.post('/api/auth/login', {
+      // API not working — delegate to mock client.
+      void axios;
+      const response = await mockHttp.post('/api/auth/login', {
         email,
         password
       });
@@ -42,7 +46,7 @@ export const useAuthStore = defineStore('auth', {
 
     async logout() {
       try {
-        await axios.post('/api/auth/logout');
+        await mockHttp.post('/api/auth/logout');
       } catch (error) {
         console.error('Logout error:', error);
       } finally {
@@ -54,8 +58,8 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async fetchUser() {
-      const response = await axios.get('/api/user');
-      this.user = response.data;
+      const response = await mockHttp.get('/api/user');
+      this.user = response.data as any;
       return response;
     },
 

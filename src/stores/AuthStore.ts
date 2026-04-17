@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import http from '@/plugins/axios';
 import { ENUMS } from '@/config';
+// API unavailable — use mock client instead of real http.
+import mockHttp from '@/mocks/client';
 // import vuetify from '@/plugins/vuetify';
 // import i18n, { type Locale } from '@/plugins/i18n';
 // import API from '@/services/api';
@@ -30,8 +32,9 @@ export const useAuthStore = defineStore('AuthStore', {
 
   actions: {
     async login(sa_id: string, password: string) {
-      delete http.defaults.headers.common.Authorization;
-      const response = await http.post('auth/login', { sa_id, password });
+      // API not working — delegate to mock client.
+      void http;
+      const response = await mockHttp.post('auth/login', { sa_id, password });
 
       if (response.data?.token) {
         this.setToken(response.data.token);
@@ -44,7 +47,7 @@ export const useAuthStore = defineStore('AuthStore', {
     async logout() {
       try {
         if (this.token) {
-          await http.post('auth/logout');
+          await mockHttp.post('auth/logout');
         }
       } catch (error) {
         console.error('Logout error:', error);
@@ -57,10 +60,10 @@ export const useAuthStore = defineStore('AuthStore', {
       this.token = token;
       if (token) {
         localStorage.setItem('token', token);
-        http.defaults.headers.common.Authorization = `Bearer ${token}`;
+        mockHttp.defaults.headers.common.Authorization = `Bearer ${token}`;
       } else {
         localStorage.removeItem('token');
-        delete http.defaults.headers.common.Authorization;
+        delete mockHttp.defaults.headers.common.Authorization;
       }
     },
 
